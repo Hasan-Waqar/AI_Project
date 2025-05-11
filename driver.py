@@ -134,11 +134,27 @@ class Driver:
                 cls_logits = self.cls_model(obs_tensor)
                 gear_idx = torch.argmax(cls_logits).item()
                 print(f"RPM: {rpm}, SpeedX: {speed_x}, cls_logits: {cls_logits.numpy()}, gear_idx: {gear_idx}, Pred_Gear: {self.gear_map[gear_idx]}")
+            
             # Set controls
-            self.control.setSteer(reg_actions[0])  # [-1, 1]
+            self.control.setSteer(reg_actions[0])
             self.control.setAccel(max(0, reg_actions[1]))  # [0, 1]
             self.control.setBrake(max(0, reg_actions[2]))  # [0, 1]
-            self.control.setGear(self.gear_map[gear_idx])  # -1 to 6
+            
+            # Simple RPM-based gear shifting
+            current_gear = self.state.getGear()
+            
+            # Define RPM thresholds for gear changes
+            if rpm > 7000:  # Upshift at high RPM
+                if current_gear < 6:  # Don't shift above gear 6
+                    self.control.setGear(current_gear + 1)
+            elif rpm < 3000:  # Downshift at low RPM
+                if current_gear > 1:  # Don't shift below gear 1
+                    self.control.setGear(current_gear - 1)
+            else:
+                # In normal RPM range, use the predicted gear if it's reasonable
+                predicted_gear = self.gear_map[gear_idx]
+                if abs(predicted_gear - current_gear) <= 1:  # Only allow small gear changes
+                    self.control.setGear(predicted_gear)
         
         # Save data
         self.save_data(reg_actions, gear_idx)
