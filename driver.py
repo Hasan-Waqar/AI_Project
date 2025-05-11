@@ -60,7 +60,7 @@ class Driver:
         self.max_speed = 100
         self.prev_rpm = None
         
-        self.manual_mode = False  # Start in manual mode
+        self.manual_mode = True  # Start in manual mode
         self.manual_controls = {"steer": 0.0, "accel": 0.0, "gear": 1}  # Default manual controls
         
         # Load neural network models
@@ -157,7 +157,7 @@ class Driver:
                     self.control.setGear(predicted_gear)
         
         # Save data
-        #self.save_data(reg_actions, gear_idx)
+        self.save_data(reg_actions, gear_idx)
         
         return self.control.toMsg()
     
@@ -234,7 +234,7 @@ class Driver:
             self.gear_map[gear_idx] if gear_idx is not None else None  # Pred_Gear
         ]
         
-        with open("road3.csv", "a", newline="") as file:
+        with open("Lancer_Round2.csv", "a", newline="") as file:
             writer = csv.writer(file)
             if file.tell() == 0:
                 header = [
@@ -258,17 +258,17 @@ class Driver:
         """Listen for keyboard inputs and update manual controls."""
         def on_press(key):
             try:
-                if key.char == 'w':
+                if key.char == 'u':
                     self.manual_controls["accel"] = 1.0  # Accelerate
-                elif key.char == 's':
+                elif key.char == 'j':
                     self.manual_controls["accel"] = -1.0  # Brake
-                elif key.char == 'a':
+                elif key.char == 'h':
                     self.manual_controls["steer"] = 0.5  # Steer left
-                elif key.char == 'd':
+                elif key.char == 'k':
                     self.manual_controls["steer"] = -0.5  # Steer right
                 elif key.char == 'e':
                     self.manual_controls["gear"] += 1  # Gear up
-                elif key.char == 'q':
+                elif key.char == 'w':
                     self.manual_controls["gear"] -= 1  # Gear down
                 elif key.char == 'm':  # Toggle manual/autonomous mode
                     self.enable_manual_mode(not self.manual_mode)
@@ -278,9 +278,9 @@ class Driver:
 
         def on_release(key):
             try:
-                if key.char in ['w', 's']:
+                if key.char in ['u', 'j']:
                     self.manual_controls["accel"] = 0.0  # Stop acceleration
-                if key.char in ['a', 'd']:
+                if key.char in ['h', 'k']:
                     self.manual_controls["steer"] = 0.0  # Stop steering
             except AttributeError:
                 pass

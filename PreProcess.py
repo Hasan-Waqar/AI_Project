@@ -15,7 +15,7 @@ y_reg_chunks = []  # Steer, Accel, Brake
 y_cls_chunks = []  # Gear_output (one-hot)
 
 # List of CSV files
-files = ["Lancer_Dirt.csv", "Lancer_Oval.csv", "Lancer_Road.csv", "Corolla_Dirt.csv", "Corolla_Oval.csv", "Corolla_Road.csv", "Peugeot_Dirt.csv", "Peugeot_Oval.csv", "Peugeot_Road.csv", ]
+files = ["Lancer_Dirt.csv", "Lancer_Oval.csv", "Lancer_Road.csv", "Corolla_Dirt.csv", "Corolla_Oval.csv", "Corolla_Road.csv", "Peugeot_Dirt.csv", "Peugeot_Oval.csv", "Peugeot_Road.csv", "datap406.csv", "corolla_data.csv", "Lancer_data.csv" ]
 
 # Expected columns (from sample data)
 expected_columns = [
@@ -38,7 +38,7 @@ for file in files:
         # Verify columns
         if "Gear.1" in chunk.columns:
             chunk.rename(columns={"Gear.1": "Gear_output"},inplace=True)
-                             
+        chunk = chunk.drop(columns=["Pred_Accel", "Pred_Gear", "Pred_Brake", "Pred_Steer"], errors='ignore') 
         if set(chunk.columns) != set(expected_columns):
             print(f"Warning: {file} has unexpected columns: {set(chunk.columns) - set(expected_columns)}")
             continue
