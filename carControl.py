@@ -46,6 +46,12 @@ class CarControl:
         return self.brake
     
     def setGear(self, gear):
+        # Validate gear range
+        if not isinstance(gear, int) or gear < -1 or gear > 6:
+            print(f"Invalid gear value: {gear}. Must be between -1 and 6.")
+            return
+        
+        # Set the new gear
         self.gear = gear
     
     def getGear(self):
