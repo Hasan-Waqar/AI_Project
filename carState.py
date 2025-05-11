@@ -97,9 +97,9 @@ class CarState:
     def setCurLapTimeD(self): self.curLapTime = self.getFloatD('curLapTime')
     def getCurLapTime(self): return self.curLapTime
 
-    def setDamage(self, damage): self.damage = damage
-    def setDamageD(self): self.damage = self.getFloatD('damage')
-    def getDamage(self): return self.damage
+    def setDamage(self, damage): self.damage = 0
+    def setDamageD(self): self.damage = 0
+    def getDamage(self): return 0
 
     def setDistFromStart(self, distFromStart): self.distFromStart = distFromStart
     def setDistFromStartD(self): self.distFromStart = self.getFloatD('distFromStart')
