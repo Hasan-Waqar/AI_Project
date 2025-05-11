@@ -133,6 +133,7 @@ class Driver:
                 reg_actions = self.reg_model(obs_tensor).numpy()
                 cls_logits = self.cls_model(obs_tensor)
                 gear_idx = torch.argmax(cls_logits).item()
+                print(f"RPM: {rpm}, SpeedX: {speed_x}, cls_logits: {cls_logits.numpy()}, gear_idx: {gear_idx}, Pred_Gear: {self.gear_map[gear_idx]}")
             # Set controls
             self.control.setSteer(reg_actions[0])  # [-1, 1]
             self.control.setAccel(max(0, reg_actions[1]))  # [0, 1]

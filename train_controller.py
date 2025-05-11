@@ -3,7 +3,8 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 from sklearn.metrics import accuracy_score
-
+from sklearn.metrics import classification_report
+    
 # Regression Model (Steer, Accel, Brake)
 class RegressionModel(nn.Module):
     def __init__(self, input_size=25):
@@ -104,11 +105,19 @@ for epoch in range(num_epochs):
         cls_val_true = torch.argmax(y_cls_val_tensor, dim=1).numpy()
         cls_val_accuracy = accuracy_score(cls_val_true, cls_val_preds)
     
+# Add to train_controller.py (inside training loop, after validation)
+    cls_val_preds = torch.argmax(cls_val_outputs, dim=1).numpy()
+    cls_val_true = torch.argmax(y_cls_val_tensor, dim=1).numpy()
+    cls_val_accuracy = accuracy_score(cls_val_true, cls_val_preds)
+    # Add per-class accuracy
+    print(f"Epoch {epoch}:")
+    print(f"  Classification Report:\n{classification_report(cls_val_true, cls_val_preds, target_names=[str(g) for g in [-1, 0, 1, 2, 3, 4, 5, 6]])}")
     if epoch % 1 == 0:
         print(f"Epoch {epoch}:")
         print(f"  Regression Val Loss: {reg_val_loss.item():.4f}")
         print(f"  Classification Val Loss: {cls_val_loss.item():.4f}, Accuracy: {cls_val_accuracy:.4f}")
 
+    
 # Save models
 torch.save(reg_model.state_dict(), "torcs_reg_controller.pth")
 torch.save(cls_model.state_dict(), "torcs_cls_controller.pth")
