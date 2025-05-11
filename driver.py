@@ -141,7 +141,7 @@ class Driver:
             self.control.setGear(self.gear_map[gear_idx])  # -1 to 6
         
         # Save data
-        self.save_data(reg_actions, gear_idx)
+        #self.save_data(reg_actions, gear_idx)
         
         return self.control.toMsg()
     
